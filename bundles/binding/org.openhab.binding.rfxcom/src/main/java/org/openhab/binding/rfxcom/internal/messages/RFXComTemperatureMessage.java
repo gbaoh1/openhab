@@ -18,6 +18,8 @@ public class RFXComTemperatureMessage extends RFXComBaseMessage {
 
 	public enum SubType {
 		THC238_268_THN122_132_THWR288_THRN122_AW129_131(2),
+		THWR800(4),
+		LaCrosse_TX3_TX4_TX17(6),
 
 		UNKNOWN(255);
 
