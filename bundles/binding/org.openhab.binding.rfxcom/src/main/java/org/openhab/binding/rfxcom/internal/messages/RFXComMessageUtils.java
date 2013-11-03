@@ -13,7 +13,7 @@ import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType
 /**
  * This class provides utilities to encode and decode RFXCOM data.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Gilles Bastié
  * @since 1.2.0
  */
 public class RFXComMessageUtils {
@@ -69,6 +69,9 @@ public class RFXComMessageUtils {
 			break;
 		case (byte) 0x20:
 			obj = new RFXComSecurity1Message(data);
+			break;
+		case (byte) 0x40:
+			obj = new RFXComThermostat1Message(data);
 			break;
 		case (byte) 0x50:
 			obj = new RFXComTemperatureMessage(data);
@@ -158,6 +161,7 @@ public class RFXComMessageUtils {
 			}
 			break;
 
+		case THERMOSTAT1:
 		case TEMPERATURE_HUMIDITY:
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:

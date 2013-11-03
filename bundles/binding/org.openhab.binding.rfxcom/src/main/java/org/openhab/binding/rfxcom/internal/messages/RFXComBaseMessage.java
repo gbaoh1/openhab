@@ -13,7 +13,7 @@ import javax.xml.bind.DatatypeConverter;
 /**
  * Base class for RFXCOM data classes. All other data classes should extend this class.
  * 
- * @author Pauli Anttila
+ * @author Pauli Anttila, Gilles Bastié
  * @since 1.2.0
  */
 public abstract class RFXComBaseMessage implements RFXComMessageInterface {
@@ -27,6 +27,7 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 		LIGHTING5(20),
 		CURTAIN1(18),
 		SECURITY1(32),
+		THERMOSTAT1(64),
 		TEMPERATURE(80),
 		TEMPERATURE_HUMIDITY(82),
 		ENERGY(90),

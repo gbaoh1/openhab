@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * This class provides utilities to convert OpenHAB data types to RFXCOM data
  * types and vice verse.
  * 
- * @author Pauli Anttila, Evert van Es
+ * @author Pauli Anttila, Evert van Es, Gilles Bastié
  * @since 1.2.0
  */
 public class RFXComDataConverter {
@@ -113,6 +113,10 @@ public class RFXComDataConverter {
 		else if (obj instanceof RFXComCurtain1Message)
 			return convertCurtain1ToState(
 					(RFXComCurtain1Message) obj, valueSelector);
+
+		else if (obj instanceof RFXComThermostat1Message)
+			return convertThermostat1ToState(
+					(RFXComThermostat1Message) obj, valueSelector);
 
 		
 		throw new NumberFormatException("Can't convert " + obj.getClass()
@@ -702,6 +706,61 @@ public class RFXComDataConverter {
 		return state;
 	}
 
+	
+	private static State convertThermostat1ToState(
+			RFXComThermostat1Message obj,
+			RFXComValueSelector valueSelector) {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+
+				state = new DecimalType(obj.temperature);
+
+			} else if (valueSelector == RFXComValueSelector.TEMPERATURE_SET) {
+
+				state = new DecimalType(obj.temperatureSet);
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else if (valueSelector == RFXComValueSelector.THERMOSTAT_STATUS) {
+
+				state = new StringType(obj.thermostatStatus.toString());
+
+			} else if (valueSelector == RFXComValueSelector.THERMOSTAT_MODE) {
+
+				state = new StringType(obj.thermostatMode.toString());
+
+			} else {
+				throw new NumberFormatException("Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+		} else {
+
+			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
+
 
 	/**
 	 * Convert OpenHAB value to RFXCOM data object.
@@ -926,6 +985,7 @@ public class RFXComDataConverter {
 
 		case SECURITY1:
 		case TEMPERATURE_HUMIDITY:
+		case THERMOSTAT1:
 		case INTERFACE_CONTROL:
 		case INTERFACE_MESSAGE:
 		case UNKNOWN:
