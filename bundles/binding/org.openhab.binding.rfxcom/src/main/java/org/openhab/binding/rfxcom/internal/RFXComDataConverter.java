@@ -118,6 +118,11 @@ public class RFXComDataConverter {
 			return convertThermostat1ToState(
 					(RFXComThermostat1Message) obj, valueSelector);
 
+		else if (obj instanceof RFXComHumidityMessage)
+			return convertHumidityToState(
+					(RFXComHumidityMessage) obj, valueSelector);
+
+
 		
 		throw new NumberFormatException("Can't convert " + obj.getClass()
 				+ " to " + valueSelector.getItemClass());
@@ -754,6 +759,71 @@ public class RFXComDataConverter {
 		} else {
 
 			throw new NumberFormatException("Can't convert " + valueSelector
+					+ " to " + valueSelector.getItemClass());
+
+		}
+
+		return state;
+	}
+
+
+	private static State convertHumidityToState(
+			RFXComHumidityMessage obj,
+			RFXComValueSelector valueSelector) {
+
+		org.openhab.core.types.State state = UnDefType.UNDEF;
+
+		logger.info("Function: private static State convertHumidityToState");
+
+		if (valueSelector.getItemClass() == NumberItem.class) {
+			logger.info("Function: private static State convertHumidityToState : RFXComValueSelector.TEMPERATURE ");
+			if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+				logger.info("Function: private static State convertHumidityToState : convert RFXComValueSelector.TEMPERATURE to RFXComValueSelector.HUMIDITY");
+				valueSelector = RFXComValueSelector.HUMIDITY;
+			}
+		}
+		
+		if (valueSelector.getItemClass() == NumberItem.class) {
+
+			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+
+				state = new DecimalType(obj.signalLevel);
+
+			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+
+				state = new DecimalType(obj.batteryLevel);
+
+			} else if (valueSelector == RFXComValueSelector.HUMIDITY) {
+				logger.info("Function: private static State convertHumidityToState : publish state for HUMIDITY");
+				state = new DecimalType(obj.humidity);
+
+//			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+//
+//				state = new DecimalType(obj.humidity);
+
+			} else {
+				throw new NumberFormatException("1. Can't convert "
+						+ valueSelector + " to NumberItem");
+			}
+
+		} else if (valueSelector.getItemClass() == StringItem.class) {
+
+			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+
+				state = new StringType(
+						DatatypeConverter.printHexBinary(obj.rawMessage));
+
+			} else if (valueSelector == RFXComValueSelector.HUMIDITY_STATUS) {
+
+				state = new StringType(obj.humidityStatus.toString());
+
+			} else {
+				throw new NumberFormatException("2. Can't convert "
+						+ valueSelector + " to StringItem");
+			}
+		} else {
+
+			throw new NumberFormatException("3. Can't convert " + valueSelector
 					+ " to " + valueSelector.getItemClass());
 
 		}
