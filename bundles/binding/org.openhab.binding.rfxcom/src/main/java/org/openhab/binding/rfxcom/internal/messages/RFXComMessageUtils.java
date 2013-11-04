@@ -76,6 +76,9 @@ public class RFXComMessageUtils {
 		case (byte) 0x50:
 			obj = new RFXComTemperatureMessage(data);
 			break;
+		case (byte) 0x51:
+			obj = new RFXComHumidityMessage(data);
+			break;
 		case (byte) 0x52:
 			obj = new RFXComTemperatureHumidityMessage(data);
 			break;
@@ -161,6 +164,7 @@ public class RFXComMessageUtils {
 			}
 			break;
 
+		case HUMIDITY:
 		case THERMOSTAT1:
 		case TEMPERATURE_HUMIDITY:
 		case INTERFACE_CONTROL:
